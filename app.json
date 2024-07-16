@@ -1,4 +1,6 @@
 {
   "name": "pivo",
-  "displayName": "pivo"
+  "displayName": "Pivo",
+  "server":"http://192.168.4.136:4000",
+  "apiKey":"9a4cb05971644cf178246d37a1ad0256fdb46d5948a0f69d9b140dd1ba61dc96"
 }
