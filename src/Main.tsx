@@ -9,12 +9,17 @@ import { Account, AppwriteException } from 'appwrite';
 import { client } from './utilities/appwrite';
 import HeaderMenuOpener from './components/home/HeaderMenuOpener';
 import Snackbar from 'react-native-snackbar';
+import ProfileScren from './screens/ProfileScren';
+import ContactListScreen from './screens/ContactListScreen';
+import ChatScreen from './screens/ChatScreen';
+import { useSelector } from 'react-redux';
+import ChatHeader from './components/chat/ChatHeader';
 const Stack = createStackNavigator();
 
 const Main = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [initialRoute, setInitialRoute] = useState('Login');
-
+    const currentUser = useSelector((state: any) => state.currentChat)?.currentChat;
     useEffect(() => {
         const checkToken = async () => {
             const account = new Account(client);
@@ -36,7 +41,7 @@ const Main = () => {
                 setIsLoading(false);
             }
         };
-        
+
 
 
         checkToken();
@@ -57,13 +62,20 @@ const Main = () => {
             <Stack.Screen name="Home" options={{
                 headerRight: () => <HeaderMenuOpener />
             }} component={Home} />
+            <Stack.Screen name="Contact" options={{
+                title: 'Select contact'
+            }} component={ContactListScreen} />
+            <Stack.Screen options={{
+                title: '',
+                headerLeft: () => <ChatHeader user={currentUser} />
+            }} name='Chat' component={ChatScreen} />
+            <Stack.Screen name='Profile' component={ProfileScren} />
             <Stack.Screen name="Login" options={{
                 headerShown: false
             }} component={Login} />
         </Stack.Navigator>
     );
 };
-
 export default Main;
 
 const styles = StyleSheet.create({

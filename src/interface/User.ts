@@ -3,5 +3,7 @@ export interface User{
     name: string;
     phone: string;
     image: string;
-    token: string;
+    bio: string;
+    status: string;
+    token?: string;
 }

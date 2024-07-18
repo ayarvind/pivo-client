@@ -5,7 +5,7 @@ import { client } from '../utilities/appwrite';
 export async function getUser(userId: string) {
     const url = `${server}/getUser`;
 
-    console.log('making request to: ', url,' with userId: ', userId)
+    console.log('making request to: ', url, ' with userId: ', userId)
     try {
         const response = await axios.post(url, {
             userId
@@ -15,7 +15,6 @@ export async function getUser(userId: string) {
             }
 
         })
-        console.log('response: ', response.data )
         return response.data;
 
     } catch (err) {
@@ -23,6 +22,26 @@ export async function getUser(userId: string) {
         return { success: false, user: null };
     }
 }
+
+export async function getBulkUser(contacts: any) {
+    const url = `${server}/getBulkUser`;
+   try {
+        const response = await axios.post(url, {
+            contacts
+        }, {
+            headers: {
+                'api-key': apiKey
+            }
+        })
+        console.log(response.data);
+        return response.data;
+   } catch (error) {
+            
+         console.log(error);
+         return { success: false, users: [] };
+   }
+} 
+
 export async function getUserId() {
     const account = new Account(client)
     try {
@@ -35,7 +54,8 @@ export async function getUserId() {
 }
 
 
-export async function updateUser(userId: string, name: string, image: string, bio: string) {
+export async function updateUser(name: string, image?: string, bio?: string) {
+    const userId = await getUserId();
     const url = `${server}/updateUser`;
     try {
         const response = await axios.post(url, {
@@ -63,3 +83,21 @@ export async function doesProfileNeedUpdate(userId: string): Promise<boolean> {
     return !user.user.name;
 }
 
+export async function getMsg(senderReceiver:string, receiverSender:string){
+    const url = `${server}/getMsg`;
+    try {
+        const response = await axios.post(url, {
+            senderReceiver,
+            receiverSender
+        }, {
+            headers: {
+                'api-key': apiKey
+            }
+        })
+        return response.data;
+    } catch (err) {
+        console.log(err);
+        return { success: false };
+    }
+
+}

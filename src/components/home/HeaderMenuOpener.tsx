@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-menu';
 import { client } from '../../utilities/appwrite';
@@ -24,6 +24,8 @@ const VerticalMenu = () => {
             } catch (error) {
                 console.error('Logout failed:', error);
             }
+        }else if(value === 'profile'){
+            navigation.navigate('Profile' as never);
         }
     };
 
@@ -41,14 +43,14 @@ const VerticalMenu = () => {
                 />
             </MenuTrigger>
             <MenuOptions>
-                <MenuOption onSelect={() => handleOptionSelect('Option 1')}>
-                    <Text style={{ padding: 10 }}>Option 1</Text>
+                <MenuOption onSelect={() => handleOptionSelect('profile')}>
+                    <Text style={styles.text}>Profile</Text>
                 </MenuOption>
                 <MenuOption onSelect={() => handleOptionSelect('Option 2')}>
-                    <Text style={{ padding: 10 }}>Option 2</Text>
+                    <Text style={styles.text}>Option 2</Text>
                 </MenuOption>
                 <MenuOption onSelect={() => handleOptionSelect('logout')}>
-                    <Text style={{ padding: 10 }}>Logout</Text>
+                    <Text style={styles.text}>Logout</Text>
                 </MenuOption>
             </MenuOptions>
         </Menu>
@@ -56,3 +58,11 @@ const VerticalMenu = () => {
 };
 
 export default VerticalMenu;
+
+
+const styles = StyleSheet.create({
+    text: {
+        padding: 8,
+        fontSize: 18,
+    },
+})

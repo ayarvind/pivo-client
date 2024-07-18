@@ -141,6 +141,7 @@ const Login = ({ navigation }: {
                                         <View style={styles.inputFieldContainer}>
                                             <Icon style={styles.icon} name='lock' size={20} color="black" />
                                             <TextInput
+                                                keyboardType='phone-pad'
                                                 editable={!verifying}
                                                 style={styles.input}
                                                 placeholder="Verification code"
