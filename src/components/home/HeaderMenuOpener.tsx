@@ -5,16 +5,20 @@ import { Menu, MenuOptions, MenuOption, MenuTrigger } from 'react-native-popup-m
 import { client } from '../../utilities/appwrite';
 import { Account } from 'appwrite';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 
 const VerticalMenu = () => {
     const navigation = useNavigation();
-
+    const dispatch = useDispatch();
     const handleOptionSelect = async (value: string) => {
         if (value === 'logout') {
             try {
                 const account = new Account(client);
                 // Type assertion to handle method signature issues
                 await account.deleteSession('current' as any);
+                dispatch({
+                    type: 'CLEAR_STATE',
+                });
                 navigation.reset({
                     index: 0,
                     routes:[{

@@ -100,4 +100,23 @@ export async function getMsg(senderReceiver:string, receiverSender:string){
         return { success: false };
     }
 
+
+}
+
+
+export async function getRecentsChats(userId:string) {
+    const url = `${server}/getRecentsChats`;
+    try {
+        const response = await axios.post(url, {
+            userId
+        }, {
+            headers: {
+                'api-key': apiKey
+            }
+        })
+        return response.data;
+    } catch (err) {
+        console.log(err);
+        return { success: false };
+    }
 }

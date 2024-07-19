@@ -3,15 +3,21 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/AntDesign'
 const Fab = ({
     onPress,
-    icon
+    icon,
+    style,
+    iconSize
 }: {
     onPress: () => void,
-    icon: string
+    icon: string,
+    style?:any,
+    iconSize?:number
 }) => {
     return (
         <View style={styles.container}>
-            <TouchableOpacity activeOpacity={0.8} style={styles.fab} onPress={onPress}>
-                <Icon name={icon} size={24} color="white" />
+            <TouchableOpacity activeOpacity={0.8} style={[styles.fab,style]} onPress={onPress}>
+                <Icon name={icon} size={
+                    iconSize ? iconSize : 21
+                } color="white" />
             </TouchableOpacity>
         </View>
     )
@@ -22,7 +28,7 @@ export default Fab
 const styles = StyleSheet.create({
     container: {
         position:'absolute',
-        right:40,
+        right:20,
         top:600,
     },
     fab: {

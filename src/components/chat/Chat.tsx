@@ -7,6 +7,10 @@ import { useSelector } from 'react-redux';
 import { getMsg } from '../../user/user';
 import Icon from 'react-native-vector-icons/AntDesign';
 import playSound from '../../utilities/playSound';
+import Fab from '../layout/Fab';
+import Media from '../layout/Media';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 const chatBg = require('../../../assets/chatbg.jpg');
 
 const Chat = ({ user }: { user: User }) => {
@@ -16,9 +20,7 @@ const Chat = ({ user }: { user: User }) => {
   const senderReceiver = `${loggedUser.id}-${user.id}`;
   const [loading, setLoading] = useState(true);
   const scrollViewRef = useRef<ScrollView>(null);
-  useEffect(() => {
-    scrollToEnd();
-  }, [])
+  const navigation = useNavigation<StackNavigationProp<any>>();
   useEffect(() => {
     const fetchMsg = async () => {
       try {
@@ -27,8 +29,6 @@ const Chat = ({ user }: { user: User }) => {
         setLoading(false);
         if (response.success) {
           setMsg(response.msgs);
-          // Scroll to bottom on initial load
-          scrollToEnd();
         } else {
           console.error('Failed to fetch messages:', response.message);
         }
@@ -49,8 +49,6 @@ const Chat = ({ user }: { user: User }) => {
         // play the sound
         playSound('send.mp3');
         const newMessages = [...prevMsg, data];
-        // Scroll to bottom on new message
-        scrollToEnd();
         return newMessages;
       });
     };
@@ -64,11 +62,17 @@ const Chat = ({ user }: { user: User }) => {
     };
   }, [receiverSender, senderReceiver]);
 
-  // Function to scroll to the end of the ScrollView
+  useEffect(() => {
+    // Scroll to bottom after messages are set
+    scrollToEnd();
+  }, [msg]); // Dependencies: messages change
+
   const scrollToEnd = () => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
+    setTimeout(() => {
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+      }
+    }, 100); // Delay scrolling to ensure content is rendered
   };
 
   return (
@@ -78,25 +82,81 @@ const Chat = ({ user }: { user: User }) => {
           <ActivityIndicator size='large' color='grey' />
         </View>
       )}
-      <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef} contentContainerStyle={styles.scrollViewContent}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        ref={scrollViewRef}
+        contentContainerStyle={styles.scrollViewContent}
+        onContentSizeChange={() => scrollToEnd()} // Ensures scroll on content size change
+      >
         {msg.map((message, index) => (
-          <View key={index} style={[styles.messageContainer, message.sender === loggedUser.id ? styles.sender : styles.receiver]}>
-            <Text style={styles.messageText}>{message.message.content}</Text>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              marginRight: 10,
-            }}>
+          <View key={index} >
 
+            <View style={[styles.messageContainer, message.sender === loggedUser.id ? styles.sender : styles.receiver]}>
+              {
+                message.message.type === 'FILE' && (
+                  <>
+                    {/* <TouchableOpacity
+                      onPress={() => {
+                        navigation.navigate('Attachment', {
+                          mediaUrl: message.message.fileUrl,
+                          content: message.message.content,
+                          sender: message.sender,
+                          receiver: message.receiver,
+                          timestamp: message.timestamp,
+
+                        });
+                      }}
+                      style={styles.mediabtn}>
+                      <Icon style={{
+                        padding: 10,
+                        backgroundColor: '#f9f9f9',
+                        borderRadius: 10,
+
+                      }} name='download' size={20} color='black' />
+                      <Text>
+                        An attachment is here.
+                      </Text>
+                    </TouchableOpacity> */}
+                    <Media
+                      style={{
+                        width: 200,
+                        height: 200,
+                        borderRadius: 10,
+                        backgroundColor: 'white',
+                      }}
+                      mediaName={message.message.fileUrl || ''}
+                      userId={message.sender}
+                      resizeMode='contain'
+                      />
+                  </>
+                )
+              }
+              <Text style={styles.messageText}>{message.message.content}</Text>
+
+            </View>
+            <View style={styles.timestampContainer}>
               <Text style={styles.timestampText}>
                 {new Date(message.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
               </Text>
               <Icon style={styles.timestampText} name='check' size={11} color='black' />
             </View>
+
           </View>
         ))}
       </ScrollView>
+      <Fab
+        style={{
+          width: 25,
+          height: 25,
+
+        }}
+        iconSize={15}
+        icon='down'
+        onPress={() => {
+          scrollToEnd();
+        }}
+      />
+
     </ImageBackground>
   );
 };
@@ -104,7 +164,7 @@ const Chat = ({ user }: { user: User }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: Dimensions.get('window').height,
+    height: Dimensions.get('window').height - 119,
     padding: 10,
     justifyContent: 'flex-end',
   },
@@ -121,19 +181,18 @@ const styles = StyleSheet.create({
   messageContainer: {
     alignSelf: 'flex-start',
     maxWidth: '80%',
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     minWidth: 100,
     paddingBottom: 5,
     borderRadius: 10,
-    marginBottom: 10,
   },
   sender: {
     alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
+    backgroundColor: '#e7e7e7',
   },
   receiver: {
-    backgroundColor: '#ECECEC',
+    backgroundColor: 'white',
   },
   messageText: {
     fontSize: 16,
@@ -141,12 +200,28 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: '500',
   },
+  timestampContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginRight: 10,
+    marginVertical: 5,
+  },
   timestampText: {
     fontSize: 12,
     alignSelf: 'flex-end',
     marginRight: 10,
     color: 'grey',
   },
+  mediabtn: {
+    padding: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: 'white',
+  }
+
 });
 
 export default Chat;

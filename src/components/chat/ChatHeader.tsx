@@ -6,11 +6,13 @@ import DisplayImage from '../layout/DisplayImage'
 import { User } from '../../interface/User'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { useNavigation } from '@react-navigation/native'
+import Media from '../layout/Media'
 
 const ChatHeader = ({ user }: {
     user: User
 }) => {
     const navigation = useNavigation<StackNavigationProp<any>>();
+    console.log('+++++++++++++++++++++',user)
     return (
         <View style={styles.header}>
             <TouchableOpacity onPress={() => {
@@ -18,7 +20,11 @@ const ChatHeader = ({ user }: {
             }} style={styles.btn} touchSoundDisabled={false}>
                 <Icon name='left' size={20} color='black' />
             </TouchableOpacity>
-            <DisplayImage style={styles.image} imagePath={user.image} />
+            <Media
+                style={styles.image}
+                mediaName={user.image}
+                userId={user.id}
+                />
 
             <View>
                 <Text style={styles.name}>{user.name}</Text>

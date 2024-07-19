@@ -14,6 +14,7 @@ import ContactListScreen from './screens/ContactListScreen';
 import ChatScreen from './screens/ChatScreen';
 import { useSelector } from 'react-redux';
 import ChatHeader from './components/chat/ChatHeader';
+import Attachment from './screens/Attachment';
 const Stack = createStackNavigator();
 
 const Main = () => {
@@ -58,7 +59,16 @@ const Main = () => {
     }
 
     return (
-        <Stack.Navigator initialRouteName={initialRoute}>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor:'white',
+                },
+                headerTitleStyle: {
+                    color: '#000',
+                },
+            }}
+        initialRouteName={initialRoute}>
             <Stack.Screen name="Home" options={{
                 headerRight: () => <HeaderMenuOpener />
             }} component={Home} />
@@ -70,6 +80,9 @@ const Main = () => {
                 headerLeft: () => <ChatHeader user={currentUser} />
             }} name='Chat' component={ChatScreen} />
             <Stack.Screen name='Profile' component={ProfileScren} />
+            <Stack.Screen options={{
+                headerShown: false
+            }} name='Attachment' component={Attachment}/>
             <Stack.Screen name="Login" options={{
                 headerShown: false
             }} component={Login} />

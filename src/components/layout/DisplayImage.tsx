@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Image, View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import RNFS from 'react-native-fs';
 
-const DisplayImage = ({ imagePath, style }: { imagePath: string, style?: any }) => {
+const DisplayImage = ({ imagePath, style,resizeMode }: {
+     imagePath: string,
+      style?: any,
+      resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center',
+     }) => {
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -54,6 +58,7 @@ const DisplayImage = ({ imagePath, style }: { imagePath: string, style?: any }) 
         <>
             {imageUri ? (
                 <Image
+                    resizeMode={resizeMode}
                     style={[style]}
                     source={{ uri: imageUri }}
                     onError={(e) => {

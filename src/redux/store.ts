@@ -7,7 +7,14 @@ const store = configureStore({
     reducer: {
         user: userReducer as unknown as Reducer<User, any>,
         contacts: contactReducers as unknown as Reducer<User, any>,
-        currentChat: currentChatReducer as unknown as Reducer<User, any>
+        currentChat: currentChatReducer as unknown as Reducer<User, any>,
+        clearState: (state = null, action: any) => {
+            if (action.type === 'CLEAR_STATE') {
+                return {};
+            }
+            return state;
+        }
+
     }
 })
 

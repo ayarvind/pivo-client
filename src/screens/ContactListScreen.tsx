@@ -12,6 +12,7 @@ import { SET_CONTACTS } from '../redux/actions/contactAction';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import Media from '../components/layout/Media';
 interface Contact {
     displayName: string;
     phoneNumbers: { number: string }[];
@@ -104,10 +105,7 @@ const ContactListScreen = () => {
                     updatedContacts = userRequests.users;
                 }
                 //    update image 
-                for (let i = 0; i < updatedContacts.length; i++) {
-                    const media = await getMedia(updatedContacts[i].image, updatedContacts[i].id);
-                    updatedContacts[i].image = media || '';
-                }
+
                 dispatch({
                     type: SET_CONTACTS,
                     payload: updatedContacts
@@ -145,12 +143,11 @@ const ContactListScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.filter}>
-                <Text style={styles.filterText}>All Contacts({contacts.length})</Text>
                 <View style={styles.inputFieldContainer}>
                     <Icon name='search' size={20} color="black" />
                     <TextInput
                         style={styles.input}
-                        placeholder="Search"
+                        placeholder="Search.."
                         value={search}
                         onChangeText={setSearch}
                     />
@@ -174,12 +171,16 @@ const ContactListScreen = () => {
                                 image: item.image,
                                 bio: item.bio
                             }
-                            navigation.navigate('Chat' ,userProps)
+                            navigation.navigate('Chat', userProps)
                         }} style={styles.contactContainer}>
                             <View>
                                 {
                                     item.image ? (
-                                        <Image src={`file:///${item.image}`} style={styles.contactImage} />
+                                        <Media
+                                            style={styles.contactImage}
+                                            mediaName={item.image}
+                                            userId={item.id}
+                                        />
                                     ) : (
                                         <Image style={styles.contactImage} source={require('../../assets/user.png')} />
                                     )
@@ -206,13 +207,16 @@ const ContactListScreen = () => {
 const styles = StyleSheet.create({
     container: {
         padding: 16,
-        backgroundColor: 'white',
+        backgroundColor: '#f9f9f9',
         height: Dimensions.get('window').height,
     },
     filter: {
         flexDirection: 'column',
         marginBottom: 5,
         gap: 15,
+        marginTop:-10,
+        backgroundColor: 'white',
+        
     },
     filterText: {
         fontSize: 18,
@@ -222,12 +226,9 @@ const styles = StyleSheet.create({
     inputFieldContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
-        backgroundColor: 'white',
         borderRadius: 5,
-        height: 50,
-        borderColor: '#d0d0d0',
-        borderWidth: 1,
+        backgroundColor:'white',
+        height: 40,
         paddingHorizontal: 10,
     },
     input: {
@@ -240,6 +241,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 16,
         width: '100%',
+        marginVertical:1,
+        backgroundColor: 'white',
 
     },
     contactName: {

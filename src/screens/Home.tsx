@@ -9,6 +9,7 @@ import Updateprofile from '../components/user/Updateprofile';
 import getMedia from '../utilities/getMedia';
 import { useNavigation } from '@react-navigation/native';
 import requestExternalStoragePermission from '../utilities/FilePermission';
+import RecentChat from '../components/chat/RecentChat';
 
 
 const Home = () => {
@@ -22,6 +23,21 @@ const Home = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    async function detectUserChange() {
+      try {
+        const id = await getUserId();
+        if (id !== user_?.id) {
+          // clear all redux state
+          dispatch({
+            type: 'CLEAR_STATE',
+          });
+        }
+      } catch (error) {
+        console.error(error);
+
+      }
+    }
+    detectUserChange();
     requestExternalStoragePermission();
   }, []);
 
@@ -98,7 +114,7 @@ const Home = () => {
           <Text>Profile not found</Text>
         </View>
       ) : (
-        <Text>Welcome {user.name}</Text>
+        <RecentChat user={user} />
       )}
       <Fab icon="plus" onPress={handlePress} />
 
