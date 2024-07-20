@@ -1,8 +1,4 @@
 {
   "name": "pivo",
   "displayName": "Pivo",
-  "server":"http://192.168.118.136:4000",
-  "apiKey":"9a4cb05971644cf178246d37a1ad0256fdb46d5948a0f69d9b140dd1ba61dc96",
-  "supabaseUrl":"https://ngvdlkgtisrcseceisno.supabase.co",
-  "supabaseKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndmRsa2d0aXNyY3NlY2Vpc25vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjA4NTQ0ODQsImV4cCI6MjAzNjQzMDQ4NH0.JM99GHYwcYyDQVUYeyTIVu4oEGfgVPokQ7CsrPBK-Wc"
-}
+  }
